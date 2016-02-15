@@ -70,7 +70,7 @@ func main() {
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:        "password, p",
-			Usage:       "server rcon password",
+			Usage:       "rcon password",
 			Destination: &password,
 		},
 	}
@@ -98,7 +98,7 @@ func main() {
 			os.Exit(1)
 		}
 		defer rc.Close()
-		colorstring.Printf("[green]Connection successfull![reset]\n")
+		colorstring.Printf("[green]Connection successful![reset]\n")
 
 		// create readline instance
 		rl, err := readline.NewEx(&readline.Config{
