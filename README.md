@@ -30,3 +30,23 @@ L 02/15/2016 - 18:38:26: rcon from "73.51.200.225:59394": command "status"
 
 10.10.10.10:27015> 
 ```
+
+Full usage documentation:
+```
+NAME:
+   rcc - control a Source RCON server
+
+USAGE:
+   rcc [global options] server
+
+VERSION:
+   0.0.1
+
+COMMANDS:
+   help, h  Shows a list of commands or help for one command
+
+GLOBAL OPTIONS:
+   --password, -p   rcon password
+   --help, -h       show help
+   --version, -v    print the version
+```
