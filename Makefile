@@ -9,7 +9,7 @@ release:
 	mkdir -p release/
 	rm release/*
 
-	GOOS=windows GOARCH=amd64 go build -o release/rcc.exe . && \
+	GOOS=windows GOARCH=386 go build -o release/rcc.exe . && \
 		cd release && \
 		zip -X -o rcc_${version}_windows_386.zip rcc.exe && \
 		rm rcc.exe
