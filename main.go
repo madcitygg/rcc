@@ -176,6 +176,7 @@ func main() {
 			response, err := rc.Execute(command)
 			if err != nil {
 				colorstring.Printf("[red]Error: %s[reset]\n", err)
+				return
 			}
 
 			fmt.Println(response.Body)
