@@ -13,6 +13,10 @@ import (
 	"strings"
 )
 
+const (
+	version = "0.0.2"
+)
+
 // Server addresses
 
 const (
@@ -64,7 +68,7 @@ func main() {
 	app.Name = "rcc"
 	app.Usage = "control a Source RCON server"
 	app.UsageText = "rcc [global options] server"
-	app.Version = "0.0.1"
+	app.Version = version
 
 	// add global command line flags
 	app.Flags = []cli.Flag{
@@ -86,7 +90,7 @@ func main() {
 		// parse server address
 		address, err := ParseAddress(ctx.Args()[0])
 		if err != nil {
-			println(err.Error())
+			colorstring.Printf("[red]Error: %s[reset]\n", err)
 			os.Exit(1)
 		}
 
@@ -94,7 +98,7 @@ func main() {
 		colorstring.Printf("Connecting to %s\n", address)
 		rc, err := rcon.Dial(address.String())
 		if err != nil {
-			println(err.Error())
+			colorstring.Printf("[red]Error: %s[reset]\n", err)
 			os.Exit(1)
 		}
 		defer rc.Close()
@@ -167,6 +171,7 @@ func main() {
 				Name:    "exit",
 				Aliases: []string{"quit", "q"},
 				Action: func(c *cli.Context) {
+					rc.Close()
 					os.Exit(1)
 				},
 			},
@@ -174,6 +179,32 @@ func main() {
 		console.Action = func(c *cli.Context) {
 			command := strings.Join(c.Args(), " ")
 			response, err := rc.Execute(command)
+
+			// if we received an EOF, we might be able to reconnect
+			if err == io.EOF {
+				rc, err = rcon.Dial(address.String())
+				if err != nil {
+					colorstring.Printf("[red]Error: %s[reset]\n", err)
+					return
+				}
+
+				err = rc.Authenticate(password)
+				if err != nil {
+					colorstring.Printf("[red]Error: %s[reset]\n", err)
+					return
+				}
+
+				response, err = rc.Execute(command)
+				if err != nil {
+					colorstring.Printf("[red]Error: %s[reset]\n", err)
+					return
+				}
+
+				fmt.Println(response.Body)
+				return
+			}
+
+			// if we received some other error, things are probably pretty bad
 			if err != nil {
 				colorstring.Printf("[red]Error: %s[reset]\n", err)
 				return

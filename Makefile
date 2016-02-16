@@ -1,6 +1,6 @@
 .PHONY: release
 
-version = $(shell sed -n 's/.*Version = "\([^"]*\)\s*"/\1/p' main.go)
+version = $(shell sed -n 's/.*version = "\([^"]*\)\s*"/\1/p' main.go)
 
 help:
 	@echo "release - build binaries for current version (${version})"
